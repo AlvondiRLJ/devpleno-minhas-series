@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react'
+import Header from './header'
+import {
+  BrowserRouter as Router,
+  Route
+} from 'react-router-dom'
+
+const Home = () => {
+  return <h1>Home</h1>
+}
+
+const Generos = () => {
+  return <h1>Generos</h1>
+}
 
 function App() {
   return (
-    <div className="App">
-      <h1>Minhas Séries</h1>
-    </div>
+    <Router>
+      <div >
+        <Header />
+        <Route path='/' exact component={Home} />
+        <Route path='/generos' component={Generos} />
+      </div>
+    </Router>
   )
 }
 
