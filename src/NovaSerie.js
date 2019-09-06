@@ -23,7 +23,7 @@ if (success) {
 
     return (
         <div className='container'>
-            <h1>Nova Série {name}</h1>
+            <h1>Nova Série</h1>
             <form>
                 <div className="form-group">
                     <label htmlFor="name">Nome</label>
