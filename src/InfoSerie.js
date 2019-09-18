@@ -4,8 +4,9 @@ import { Redirect } from 'react-router-dom'
 import { Badge } from 'reactstrap'
 
 const InfoSerie = ({ match }) => {
-    const [name, setName] = useState('')
+    const [form, setForm] = useState({})
     const [success, seteSuccess] = useState(false)
+    const [mode, setMode] = useState('INFO')
 
     const [data, setData] = useState({})
 
@@ -14,6 +15,7 @@ const InfoSerie = ({ match }) => {
             .get('/api/series/' + match.params.id)
             .then(res => {
                 setData(res.data)
+                setForm(res.data)
             })
     }, [match.params.id])
 
@@ -27,13 +29,17 @@ const InfoSerie = ({ match }) => {
         backgroundRepeat: 'no-repeat'
     }
 
-    const onChange = evt => {
-        setName(evt.target.value)
+    const onChange = field => evt => {
+        setForm({
+            ...form,
+            [field]: evt.target.value
+        })
     }
+ 
     const save = () => {
         axios
             .post('/api/series', {
-                name
+                form
             })
             .then(res => {
                 seteSuccess(true)
@@ -57,23 +63,35 @@ if (success) {
                                 <div className='lead text-white'>
                                     <Badge color='success'>Assistido</Badge>
                                     <Badge color='warning'>Para assistir</Badge>
+                                    Gênero: {data.genre}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </header>
-            <div className='container'>
-                <h1>Nova Série</h1>
-                <pre>{JSON.stringify(data)}</pre>
-                <form>
-                    <div className="form-group">
-                        <label htmlFor="name">Nome</label>
-                        <input type="text" value={name} onChange={onChange} className="form-control" id="name"  placeholder="Nome da Série" />
-                    </div>
-                    <button type="button" onClick={save} className="btn btn-primary">Salvar</button>
-                </form>
+            <div>
+                <button className="btn btn-primary" onClick={() => setMode('EDIT')}>Editar</button>
             </div>
+            {
+                mode === 'EDIT' &&
+                <div className='container'>
+                    <h1>Nova Série</h1>
+                    <pre>{JSON.stringify(form)}</pre>
+                    <button className="btn btn-primary"onClick={() => setMode('INFO')}>Cancelar edição</button>
+                    <form>
+                        <div className="form-group">
+                            <label htmlFor="name">Nome</label>
+                            <input type="text" value={form.name} onChange={onChange('name')} className="form-control" id="name"  placeholder="Nome da Série" />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="name">Comentários</label>
+                            <input type="text" value={form.comments} onChange={onChange('comments')} className="form-control" id="name"  placeholder="Comentário" />
+                        </div>
+                        <button type="button" onClick={save} className="btn btn-primary">Salvar</button>
+                    </form>
+                </div>
+            }
         </div>
     )
 }
